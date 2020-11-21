@@ -2,7 +2,7 @@ import pygame
 import os
 from enemies.enemy import Enemy
 
-class Scorpion(Enemy):
+class Club(Enemy):
 
     def __init__(self):
         super().__init__()
@@ -13,4 +13,4 @@ class Scorpion(Enemy):
             if x < 10:
                 add_str = "0" + add_str
             self.imgs.append(pygame.transform.scale(pygame.image.load(os.path.join(
-                "game_assets/enemies/1", "1_enemies_1_run_0" + add_str + ".png")), (64, 64)))
+                "game_assets/enemies/3", "3_enemies_1_run_0" + add_str + ".png")), (64, 64)))

@@ -2,6 +2,8 @@ import pygame
 import os
 import time
 from enemies.scorpion import Scorpion
+from enemies.wizard import Wizard
+from enemies.club import Club
 
 
 class Game:
@@ -10,7 +12,7 @@ class Game:
         self.width = 1200
         self.height = 700
         self.win = pygame.display.set_mode((self.width, self.height))
-        self.enemies = [Scorpion()]
+        self.enemies = [Wizard()]
         self.towers = []
         self.lives = 10
         self.money = 100
@@ -26,7 +28,7 @@ class Game:
         clock = pygame.time.Clock()
 
         while run:
-            clock.tick(60)
+            clock.tick(600)
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     run = False
@@ -42,15 +44,17 @@ class Game:
 
             # delete all enemies off the screen
             for d in to_del:
-                self.enemys.remove(d)
+                self.enemies.remove(d)
 
             self.draw()
 
         pygame.quit()
 
     def draw(self):
+        # draw gameboard
         self.win.blit(self.bg, (0, 0))
 
+        # draw enemy
         for enemy in self.enemies:
             enemy.draw(self.win)
 

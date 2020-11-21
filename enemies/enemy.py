@@ -4,22 +4,22 @@ import math
 
 class Enemy:
 
-    imgs = []
-
-    def __init__(self, x, y):
-        self.x = self.path[0][0]
-        self.y = self.path[0][1]
+    def __init__(self):
         self.width = 64
         self.height = 64
         self.animation_count = 0
         self.health = 1
         self.vel = 3
         self.path = [(45, 223), (172, 225), (221, 264), (271, 285), (529, 280), (577, 254), (614, 203), (632, 109), (696, 62), (769, 61), (813, 106), (836, 180), (859, 251), (927, 272), (996, 299),
-                     (1040, 341), (1047, 416), (1017, 473), (970, 498), (898, 497), (765, 499), (721, 523), (680, 550), (619, 549), (292, 557), (186, 552), (133, 537), (99, 496), (81, 401), (44, 356), (2, 347)]
+                     (1040, 341), (1047, 416), (1017, 473), (970, 498), (898, 497), (765, 499), (721, 523), (680, 550), (619, 549), (292, 557), (186, 552), (133, 537), (99, 496), (81, 401), (44, 356), (2, 347), (-20, 355)]
+        self.x = self.path[0][0]
+        self.y = self.path[0][1]
         self.img = None
+        self.dis = 0
         self.path_pos = 0
-        self.move_count = 0
         self.move_dis = 0
+        self.imgs = []
+        self.flipped = False
 
     def draw(self, win):
         """
@@ -27,13 +27,13 @@ class Enemy:
         :param win: surface
         :return: None
         """
-        self.animation_count += 1
-        self.img = self.imgs[self.animation_count]
 
+        self.img = self.imgs[self.animation_count]
+        self.animation_count += 1
         if self.animation_count >= len(self.imgs):
             self.animation_count = 0
 
-        win.blit(self.img, (self.x, self.y))
+        win.blit(self.img, (self.x - self.img.get_width()/2, self.y - self.img.get_height() + 8))
         self.move()
 
     def collide(self, X, Y):
@@ -53,29 +53,43 @@ class Enemy:
         Move enemy
         :return: None
         """
-        x1, y1 = self.path[self.path_pas]
+        x1, y1 = self.path[self.path_pos]
         if self.path_pos + 1 >= len(self.path):
-            x2, y2 = (-2, )
+            x2, y2 = (-10, 355)
         else:
             x2, y2 = self.path[self.path_pos+1]
 
-        move_dis = math.sqrt(((x2-x1)**2 + (y2-y1)**2))
+        dirn = ((x2 - x1)*2, (y2 - y1)*2)
+        length = math.sqrt((dirn[0]**2 + (dirn[1])**2))
+        dirn = (dirn[0]/length, dirn[1]/length)
 
-        self.move_count += 1
-        dirn = (x2 - x1, y2 - y1)
+        if dirn[0] < 0 and not(self.flipped):
+            self.flipped = True
+            for x, img in enumerate(self.imgs):
+                self.imgs[x] = pygame.transform.flip(img, True, False)
 
-        pos = (self.x + dirn[0] * self.move_count,
-               self.y + dirn[1] * self.move_count)
-        self.dis += math.sqrt((move_x-x1)**2 + (move_y-y1)**2)
-
-        # go to next point
-        if self.dis >= move.dis:
-            self.dis = 0
-            self.move_count = 0
-            self.path_pos += 1
+        move_x, move_y = ((self.x + dirn[0]), (self.y + dirn[1]))
 
         self.x = move_x
         self.y = move_y
+
+        # go to next point
+        if dirn[0] >= 0: # moving down
+            if self.x >= x2 and self.y >= y2:
+                self.path_pos += 1
+
+            else:
+                if self.x >= x2 and self.y <= y2:
+                    self.path_pos += 1
+        else: # moving left
+            if dirn[1] >= 0: # moving down
+                if self.x < x2 and self.y >= y2:
+                    self.path_pos += 1
+            else:
+                if self.x < x2 and self.y <= y2:
+                    self.path_pos += 1
+
+        return True
 
     def hit(self):
         """
@@ -84,4 +98,4 @@ class Enemy:
         """
         self.health -= 1
         if self.health <= 0:
-            return true
+            return True
