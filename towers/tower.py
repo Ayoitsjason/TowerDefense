@@ -12,11 +12,48 @@ class Tower:
         self.tower_imgs = []
 
     def draw(self, win):
-        img = self.tower_imgs[self.level]
-        win.blit(img, (self.x/img.get_width()/2, self.y/img.get_height()/2))
+        """
+        draws the tower
+        :param win: surface
+        :return: None
+        """
+        img = self.tower_imgs[self.level - 1]
+        win.blit(img, (self.x - img.get_width()//2, self.y - img.get_height()//2))
 
-    def click(self):
-        pass
+    def click(self, X, Y):
+        """
+        returns if tower has been clocked on
+        and selects tower if it was clicked
+        :param X:
+        :param Y:
+        :return: bool
+        """
+        if X <= self.x + self.width and X >= self.x:
+            if Y <= self.y + self.height and Y >= self.y:
+                return True
+        return False
 
     def sell(self):
-        pass
+        """
+        call to sell the tower, returns sell price
+        :return: int
+        """
+        return self.sell_price(self.level-1)
+
+    def upgrade(self):
+        """
+        upgrades the tower for a given cost
+        :return:
+        """
+        self.level += 1
+
+    def get_upgrade_cost(self):
+        """
+        returns the upgrade cost
+        :return:
+        """
+        return self.price(self.level-1)
+
+    def move(self, x, y):
+        self.x = x
+        self.y = y
