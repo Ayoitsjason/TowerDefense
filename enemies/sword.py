@@ -8,7 +8,7 @@ for x in range(20):
     if x < 10:
         add_str = "0" + add_str
     imgs.append(pygame.transform.scale(
-        pygame.image.load(os.path.join("game_assets/enemies/4", "4_enemies_1_run_0" + add_str + ".png")).convert_alpha(),
+        pygame.image.load(os.path.join("game_assets/enemies/4", "4_enemies_1_run_0" + add_str + ".png")),
         (100, 100)))
 
 
